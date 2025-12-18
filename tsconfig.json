@@ -5,7 +5,7 @@
     "moduleResolution": "Node",
     "rootDir": "./src",
     "outDir": "./dist",
-
+    "typeRoots": ["./src/types", "./node_modules/@types"],
     "strict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,

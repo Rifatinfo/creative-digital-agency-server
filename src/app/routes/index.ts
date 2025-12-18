@@ -1,6 +1,10 @@
 import { Router } from "express";
 import { UserRouters } from "../modules/user/user.routes";
 import { AuthRouters } from "../modules/auth/auth.routes";
+import { CampaignRouters } from "../modules/campaign/campaign.routes";
+import { AdminRouters } from "../modules/admin/admin.routes";
+import { ServiceRoutes } from "../modules/service/service.route";
+import { ServicePlanRoutes } from "../modules/servicePlan/servicePlan.route";
 
 export const router = Router();
 
@@ -10,9 +14,25 @@ const moduleRouters = [
         route : UserRouters
     },
     {
+        path : "/user",
+        route : AdminRouters
+    },
+    {
         path : "/auth",
         route : AuthRouters
     },
+    {
+        path : "/campaign",
+        route : CampaignRouters
+    },
+    {
+        path : "/service",
+        route : ServiceRoutes
+    },
+    {
+        path : "/servicePlan",
+        route : ServicePlanRoutes
+    }
 ]
 
 moduleRouters.forEach((route) => {

@@ -5,14 +5,15 @@ import AppError from "../../middlewares/AppError";
 import bcrypt from "bcryptjs";
 import { jwtHelper } from "../../middlewares/jwthelper";
 
-const login = async (payload: { email: string, password: string }) => {
+const login = async (payload: { email: string, password: string  }) => {
     const user = await prisma.user.findUniqueOrThrow({
         where: {
             email: payload.email,
             status: UserStatus.ACTIVE
         }
     })
-
+    console.log(payload);
+    
     if (!user) {
         throw new AppError(StatusCodes.NOT_FOUND, "User not found");
     }
@@ -24,7 +25,7 @@ const login = async (payload: { email: string, password: string }) => {
         throw new AppError(StatusCodes.BAD_REQUEST, "Password is incorrect")
     }
     const accessToken = jwtHelper.generateToken({ email: user.email, role: user.role }, "abcd", "1h");
-    const refreshToken = jwtHelper.generateToken({ email: user.email, role: user.role }, "abcd", "90d");
+    const refreshToken = jwtHelper.generateToken({ email: user.email, role: user.role}, "abcd", "90d");
     return {
         accessToken,
         refreshToken,
