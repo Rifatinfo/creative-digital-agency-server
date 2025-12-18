@@ -13,42 +13,59 @@ datasource db {
   provider = "postgresql"
 }
 
-
 model User {
-  id        String     @id @default(uuid())
-  name      String?
-  email     String     @unique
+  id           String     @id @default(uuid())
+  name         String?
+  email        String     @unique
   profilePhoto String?
-  role      UserRole   @default(CLIENT)
-  password  String
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
-  status    UserStatus @default(ACTIVE)
+  role         UserRole   @default(CLIENT)
+  password     String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  status       UserStatus @default(ACTIVE)
   // stripeCustomerId String? @unique
-  admin     Admin?
-  customer   Customer?
-
+  admin        Admin?
+  customer     Customer?
 
   @@map("user")
+}
 
+model Campaign {
+  id          Int     @id @default(autoincrement())
+  title       String
+  category    String
+  subcategory String
+  thumbnail   String
+  videoUrl    String
+  views       String
+  dateLabel   String
+  brand       String?
+  duration    String
+  featured    Boolean @default(false)
+
+  adminEmail String
+  admin      Admin  @relation(fields: [adminEmail], references: [email])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Admin {
-  id String @id @default(uuid())
-  email String @unique
-  name  String?
+  id           String     @id @default(uuid())
+  email        String     @unique
+  name         String?
   profilePhoto String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user User @relation(fields: [email] , references: [email])
-  
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  user         User       @relation(fields: [email], references: [email])
+  campaigns    Campaign[]
+
   @@map("admin")
 }
 
-
 model Customer {
   id           String   @id @default(uuid())
-  email        String  @unique
+  email        String   @unique
   phone        String?
   name         String?
   address      String?
@@ -57,9 +74,63 @@ model Customer {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  user User @relation(fields: [email] , references: [email])
+  user User @relation(fields: [email], references: [email])
 
   @@map("student")
+}
+
+model Service {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String?
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  servicePlans ServicePlan[]
+}
+
+model ServicePlan {
+  id String @id @default(uuid())
+  name String
+  price Int
+  currency String
+  period String
+  description String
+  features  Json
+  ctaText String
+  highlighted Boolean @default(false)
+  stripePriceId String
+
+  serviceId String
+  service Service @relation(fields: [serviceId], references: [id])
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  payments Payment[]
+}
+
+model Payment {
+  id String @id @default(uuid())
+  stripeSessionId   String         @unique
+  stripePaymentId   String?
+  amount            Int
+  currency          String
+  status            PaymentStatus
+  customerEmail     String?
+
+  planId            String
+  plan              ServicePlan    @relation(fields: [planId], references: [id])
+
+  createdAt         DateTime       @default(now())
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
 }
 
 enum UserRole {

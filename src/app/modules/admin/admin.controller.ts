@@ -12,7 +12,7 @@ const createAdmin = catchAsync(async (req: Request, res : Response) => {
         success : true,
         message : "Admin Created Successfully",
         data : result
-    })
+    });
 });
 
 export const UserController = {
