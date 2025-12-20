@@ -7,5 +7,7 @@ export interface IServicePlan {
   features: string[];
   ctaText: string;
   highlighted?: boolean;
-  serviceId: number;
+  serviceId: string;
+  currency: string;         
+  stripePriceId: string;
 }
