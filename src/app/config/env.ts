@@ -9,11 +9,12 @@ interface EnvConfig {
     NODE_ENV: string,
     api_secret : string,
     cloud_name : string,
-    api_key : string
+    api_key : string,
+    stripeSecretKey : string,
 }
 
 const loadEnvVariable = (): EnvConfig => {
-    const requiredEnvVariable: string[] = ["PORT", "DATABASE_URL", "NODE_ENV", "CLOUDINARY_API_SECRET", "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY"]
+    const requiredEnvVariable: string[] = ["PORT", "DATABASE_URL", "NODE_ENV", "CLOUDINARY_API_SECRET", "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "STRIPE_SECRET_KEY"]
     
     requiredEnvVariable.forEach(key => {
         if (!process.env[key]) {
@@ -27,7 +28,8 @@ const loadEnvVariable = (): EnvConfig => {
         NODE_ENV: process.env.NODE_ENV as string,
         api_secret: process.env.CLOUDINARY_API_SECRET as string,
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME as string,
-        api_key: process.env.CLOUDINARY_API_KEY as string
+        api_key: process.env.CLOUDINARY_API_KEY as string,
+        stripeSecretKey: process.env.STRIPE_SECRET_KEY as string
     
     }
 }

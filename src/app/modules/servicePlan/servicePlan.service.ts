@@ -12,9 +12,7 @@ const createPlanIntoDB = async (serviceId: string,
             ctaText: plan.ctaText,
             highlighted: plan.highlighted ?? false,
             features: plan.features,
-
             currency: "BDT",
-            // stripePriceId: "", // Set to an empty string instead of null
             serviceId,
         })),
     });
