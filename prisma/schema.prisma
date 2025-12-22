@@ -76,7 +76,7 @@ model Customer {
 
   user User @relation(fields: [email], references: [email])
 
-  @@map("student")
+  @@map("customer")
 }
 
 model Service {
@@ -110,23 +110,54 @@ model ServicePlan {
   updatedAt   DateTime @updatedAt
 
   payments Payment[]
+
+  bookings Booking[]
 }
 
 model Payment {
   id String @id @default(uuid())
   stripeSessionId   String         @unique
-  stripePaymentId   String?
+  stripePaymentId   String?         // pi_xxx  ← TRANSACTION ID using uuid
   amount            Int
   currency          String
-  status            PaymentStatus
-  customerEmail     String?
+  status            PaymentStatus @default(PENDING)
+  customerEmail     String
+  fullName          String?
+  company           String?
+  phone             String?
+  projectDetails    String?
+  planId            String
+  plan              ServicePlan    @relation(fields: [planId], references: [id])
+  paymentGetWayData Json?
+  createdAt         DateTime       @default(now())
+
+  bookings Booking[]
+}
+
+model Booking {
+  id String @id @default(uuid())
+  fullName String
+  customerEmail String
+  company String?
+  phone String?
+  projectDetails String?
+
+  status  BookingStatus @default(PENDING)
 
   planId            String
   plan              ServicePlan    @relation(fields: [planId], references: [id])
 
+  paymentId String?
+  payment   Payment?      @relation(fields: [paymentId], references: [id])
   createdAt         DateTime       @default(now())
 }
 
+enum BookingStatus {
+  PENDING
+  PAID
+  CONFIRMED
+  CANCELLED
+}
 enum PaymentStatus {
   PENDING
   PAID

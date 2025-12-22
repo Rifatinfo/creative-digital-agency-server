@@ -5,6 +5,7 @@ import { CampaignRouters } from "../modules/campaign/campaign.routes";
 import { AdminRouters } from "../modules/admin/admin.routes";
 import { ServiceRoutes } from "../modules/service/service.route";
 import { ServicePlanRoutes } from "../modules/servicePlan/servicePlan.route";
+import { BookingRouter } from "../modules/booking/booking.routes";
 
 export const router = Router();
 
@@ -32,6 +33,10 @@ const moduleRouters = [
     {
         path : "/servicePlan",
         route : ServicePlanRoutes
+    },
+    {
+        path : "/booking",
+        route : BookingRouter
     }
 ]
 
