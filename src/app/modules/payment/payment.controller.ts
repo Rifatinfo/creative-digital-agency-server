@@ -3,6 +3,8 @@ import { stripe } from "../../helper/strip";
 import { StripeWebhookService } from "./payment.service";
 import { sendResponse } from "../../middlewares/sendResponse";
 import { Request, Response } from "express";
+import AppError from "../../middlewares/AppError";
+import { StatusCodes } from "http-status-codes";
 
 const handleStripeWebhookEvent = catchAsync(async (req: Request, res: Response) => {
 
@@ -17,7 +19,7 @@ const handleStripeWebhookEvent = catchAsync(async (req: Request, res: Response) 
         res.status(400).send(`Webhook Error: ${err.message}`);
         return;
     }
-  
+
     const result = await StripeWebhookService.handleStripeWebhookEvent(event);
 
     sendResponse(res, {
@@ -28,6 +30,22 @@ const handleStripeWebhookEvent = catchAsync(async (req: Request, res: Response) 
     });
 });
 
+const makePaymentDone = catchAsync(async (req: Request, res: Response) => {
+    const { bookingId, paymentId } = req.body;
+    if (!bookingId || !paymentId) {
+        throw new AppError(StatusCodes.BAD_REQUEST, "BookingId and PaymentId are required");
+    }
+    const result = await StripeWebhookService.makePaymentDone(bookingId, paymentId);
+    sendResponse(res, {
+        statusCode: 200,
+        success: true,
+        message: 'Payment Completed and Booking Confirmed Successfully',
+        data: result,
+    });
+});
+
 export const StripeWebhookController = {
-    handleStripeWebhookEvent
+    handleStripeWebhookEvent,
+    makePaymentDone,
 }
+

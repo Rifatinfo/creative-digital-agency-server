@@ -6,6 +6,7 @@ import { AdminRouters } from "../modules/admin/admin.routes";
 import { ServiceRoutes } from "../modules/service/service.route";
 import { ServicePlanRoutes } from "../modules/servicePlan/servicePlan.route";
 import { BookingRouter } from "../modules/booking/booking.routes";
+import { PaymentRoute } from "../modules/payment/payment.route";
 
 export const router = Router();
 
@@ -37,6 +38,10 @@ const moduleRouters = [
     {
         path : "/booking",
         route : BookingRouter
+    },
+    {
+        path : "/payment",
+        route : PaymentRoute
     }
 ]
 
