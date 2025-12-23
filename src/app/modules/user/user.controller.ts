@@ -5,6 +5,8 @@ import { sendResponse } from "../../middlewares/sendResponse";
 import { StatusCodes } from "http-status-codes";
 import pick from "../../helper/pick";
 import { userFilterableFields } from "./user.constant";
+import { IAuthUser } from "../../../types/common";
+import AppError from "../../middlewares/AppError";
 
 const createCustomer = catchAsync(async (req: Request, res: Response) => {
     const result = await UserService.createCustomer(req);
@@ -30,7 +32,38 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     })
 })
 
+const getMyProfile = catchAsync(async (req: Request, res: Response) => {
+    const user = req.user;
+    if (!user) {
+        throw new AppError(StatusCodes.UNAUTHORIZED, "Unauthorized");
+    }
+    const result = await UserService.getMyProfile(user as IAuthUser);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        message: "My profile data fetched!",
+        success: true,
+        data: result
+    });
+});
+
+const updateMyProfile = catchAsync(async (req : Request, res : Response) => {
+    const user = req.user;
+    if (!user) {
+        throw new AppError(StatusCodes.UNAUTHORIZED, "Unauthorized");
+    }
+    const result = await UserService.updateMyProfile(req, user as IAuthUser);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        message: "My profile data fetched!",
+        success: true,
+        data: result
+    });
+})
+
 export const UserController = {
     createCustomer,
-    getAllFromDB
+    getAllFromDB,
+    getMyProfile,
+    updateMyProfile
 }
+

@@ -3,8 +3,9 @@ import { fileUploader } from "../../helper/fileUploader";
 import bcrypt from "bcryptjs";
 import { prisma } from "../../config/db";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
-import { Prisma } from "../../../generated/prisma/client";
+import { Prisma, UserRole, UserStatus } from "../../../generated/prisma/client";
 import { userSearchField } from "./user.constant";
+import { IAuthUser } from "../../../types/common";
 
 const createCustomer = async (req: Request) => {
     let profilePhotoUrl: string | undefined;
@@ -94,7 +95,110 @@ const getAllFromDB = async (params: any, options: IOptions) => {
         data: result
     }
 }
+
+const getMyProfile = async (user?: IAuthUser) => {
+    const userInfo = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: user?.email,
+            status: UserStatus.ACTIVE
+        },
+        select: {
+            id: true,
+            email: true,
+            role: true,
+            status: true,
+        }
+    });
+    let profileInfo;
+    if (userInfo.role === "ADMIN") {
+        profileInfo = await prisma.admin.findUnique({
+            where: {
+                email: userInfo.email
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                profilePhoto: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        })
+    } else if (userInfo.role === "CLIENT") {
+        profileInfo = await prisma.customer.findUnique({
+            where: {
+                email: userInfo.email
+            },
+            select: {
+                id: true,
+                email: true,
+                phone: true,
+                name: true,
+                address: true,
+                profilePhoto: true,
+                isDeleted: true,
+                createdAt: true,
+                updatedAt: true
+            }
+        });
+    }
+    return {...userInfo, ...profileInfo};
+}
+
+const updateMyProfile = async (req: Request, user?: IAuthUser) => {
+    const userInfo = await prisma.user.findUniqueOrThrow({
+        where : {
+            email : user?.email,
+            status : UserStatus.ACTIVE
+        }
+    });
+    const file = req.file;
+    if(file){
+       const updateToCloudinary = await fileUploader.uploadToCloudinary(file);
+       req.body.profilePhoto = updateToCloudinary?.secure_url;
+    }
+
+    const {name, phone, address, profilePhoto, password} = req.body;
+    const userUpdate : any = {};
+    if(password){
+        const hashedPassword = await bcrypt.hash(password, 10);
+        req.body.password = hashedPassword;
+    }
+
+    const profileUpdate = {name, phone, address, profilePhoto};
+    if(userInfo.role === UserRole.ADMIN){
+        return  await prisma.admin.update({
+            where : {
+                email : userInfo.email
+            },
+            data : {...profileUpdate, 
+                user : {
+                    update : userUpdate
+                }
+            },
+            
+        });
+    }else if(userInfo.role === UserRole.CLIENT){
+        return await prisma.customer.update({
+            where : {
+                email : userInfo.email
+            },
+            data : {...profileUpdate, 
+                user : {
+                    update : userUpdate
+                }
+            },
+            
+        });
+    }
+   
+}
+
+
 export const UserService = {
     createCustomer,
-    getAllFromDB
+    getAllFromDB,
+    getMyProfile,
+    updateMyProfile
 }
+

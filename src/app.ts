@@ -15,11 +15,11 @@ app.use(cors());
 app.use(compression()); 
 
 app.use(cookieParser());
-app.post(
-    "/api/v1/webhook",
-    express.raw({ type: "application/json" }),
-    StripeWebhookController.handleStripeWebhookEvent
-);
+// app.post(
+//     "/api/v1/webhook",
+//     express.raw({ type: "application/json" }),
+//     StripeWebhookController.handleStripeWebhookEvent
+// );
 app.use(express.json()); 
 app.use(
   cors({

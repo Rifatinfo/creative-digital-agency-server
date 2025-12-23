@@ -15,20 +15,6 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
     throw new AppError(StatusCodes.BAD_REQUEST, "Invalid plan selected");
   }
 
-  // Create booking and include plan info automatically
-  // const booking = await prisma.booking.create({
-  //   data: {
-  //     fullName: payload.fullName,
-  //     customerEmail: payload.customerEmail,
-  //     company: payload.company,
-  //     phone: payload.phone,
-  //     projectDetails: payload.projectDetails,
-  //     planId: payload.planId,
-  //   },
-  //   include: {
-  //     plan: true, // include full plan info
-  //   },
-  // });
 
   const result = await prisma.$transaction(async (tx) => {
     // Create booking
@@ -79,10 +65,11 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
         paymentId: payment.id,
         bookingId: booking.id,
       },
-      success_url: `https://www.programming-hero.com/`,
+   
+      success_url: `https://www.programming-hero.com/payment-success?bookingId=${booking.id}&paymentId=${payment.id}`,
       cancel_url: `https://next.programming-hero.com/`,
     });
-    
+
     return {
       booking,
       payment,

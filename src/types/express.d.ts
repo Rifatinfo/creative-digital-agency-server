@@ -1,8 +1,9 @@
 // import { User } from "@prisma/client";
 
 import { User } from "../generated/prisma/client";
+import { IAuthUser } from "./common";
 
-interface JwtUser {
+export interface JwtUser  {
   id: string;
   email: string;
   role: string;
@@ -15,5 +16,6 @@ declare global {
     }
   }
 }
+
 
 export {};
