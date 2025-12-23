@@ -130,7 +130,7 @@ model Payment {
   plan              ServicePlan    @relation(fields: [planId], references: [id])
   paymentGetWayData Json?
   createdAt         DateTime       @default(now())
-
+  invoiceUrl        String?
   bookings Booking[]
 }
 
