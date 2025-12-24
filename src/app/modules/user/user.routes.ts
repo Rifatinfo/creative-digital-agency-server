@@ -23,5 +23,6 @@ router.patch("/update-my-profile", auth(UserRole.CLIENT, UserRole.ADMIN), fileUp
     return UserController.updateMyProfile(req, res, next)
 });
 router.get("/me",auth(UserRole.CLIENT, UserRole.ADMIN) ,UserController.getMyProfile);
+router.patch('/:id/status', auth(UserRole.ADMIN, UserRole.CLIENT), UserController.changeProfileStatus);
 
 export const UserRouters = router;

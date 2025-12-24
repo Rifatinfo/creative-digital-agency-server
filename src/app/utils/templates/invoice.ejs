@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .invoice-box {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ===== HEADER ===== */
+    .header-table {
+      width: 100%;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .header-left {
+      font-size: 28px;
+      font-weight: bold;
+      color: #c73450;
+    }
+
+    .header-right {
+      text-align: right;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .header-right strong {
+      color: #000;
+    }
+
+    /* ===== SECTION ===== */
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #444;
+    }
+
+    .details p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+
+    /* ===== TABLE ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    thead {
+      background: #c73450;
+      color: #fff;
+    }
+
+    th, td {
+      padding: 14px;
+      border: 1px solid #eee;
+      font-size: 14px;
+    }
+
+    th {
+      text-align: left;
+    }
+
+    td.amount,
+    th.amount {
+      text-align: right;
+    }
+
+    /* ===== TOTAL ===== */
+    .total-box {
+      margin-top: 25px;
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="invoice-box">
+
+    <!-- HEADER -->
+    <table class="header-table">
+      <tr>
+        <td class="header-left">
+          INVOICE
+          <div style="font-size:13px;color:#666;font-weight:normal;">
+            socialverb
+          </div>
+        </td>
+        <td class="header-right">
+          <strong>Invoice ID:</strong> <%= stripeSessionId %><br />
+          <strong>Booking ID:</strong> <%= bookingId %><br />
+          <strong>Date:</strong> <%= invoiceDate.toDateString() %>
+        </td>
+      </tr>
+    </table>
+
+    <!-- CUSTOMER DETAILS -->
+    <div class="details">
+      <div class="section-title">Billed To</div>
+      <p><strong>Name:</strong> <%= fullName %></p>
+      <p><strong>Email:</strong> <%= customerEmail %></p>
+      <% if (company) { %>
+        <p><strong>Company:</strong> <%= company %></p>
+      <% } %>
+      <% if (phone) { %>
+        <p><strong>Phone:</strong> <%= phone %></p>
+      <% } %>
+    </div>
+
+    <!-- INVOICE TABLE -->
+    <table>
+      <thead>
+        <tr>
+          <th>Service Plan</th>
+          <th class="amount">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= planName %></td>
+          <td class="amount"><%= currency %> <%= amount.toFixed(2) %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- TOTAL -->
+    <div class="total-box">
+      Total: <%= currency %> <%= amount.toFixed(2) %>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer">
+      <p>Thank you for choosing our service.</p>
+      <p>This is a system generated invoice. No signature required.</p>
+    </div>
+
+  </div>
+</body>
+</html>

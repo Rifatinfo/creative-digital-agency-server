@@ -3,6 +3,9 @@ import AppError from "../../middlewares/AppError";
 import { StatusCodes } from "http-status-codes";
 import { prisma } from "../../config/db";
 import { BookingStatus, PaymentStatus } from "../../../generated/prisma/enums";
+import { IInvoiceData } from "./payment.interface";
+import { generatePdf } from "../../utils/invoice";
+import { sendEmail } from "../../utils/sendEmail";
 
 
 const handleStripeWebhookEvent = async (event: Stripe.Event) => {
@@ -60,22 +63,64 @@ const handleStripeWebhookEvent = async (event: Stripe.Event) => {
 };
 
 const makePaymentDone = async (bookingId: string, paymentId: string) => {
-  await prisma.$transaction(async (tx) => {
-    await tx.payment.update({
+  const result = await prisma.$transaction(async (tx) => {
+    const payment = await tx.payment.update({
       where: { id: paymentId },
       data: {
         status: PaymentStatus.PAID,
       },
+      include: {
+        plan: true,
+      },
     });
 
-    await tx.booking.update({
+    const booking = await tx.booking.update({
       where: { id: bookingId },
       data: {
         status: BookingStatus.CONFIRMED,
       },
     });
+
+    return { payment, booking };
+  });
+
+  // invoice generation and email sending can be done here later 
+  const invoiceData: IInvoiceData = {
+    stripeSessionId: result.payment.stripeSessionId || result.payment.id,
+    invoiceDate: result.payment.createdAt,
+    bookingDate: result.booking.createdAt,
+    fullName: result.payment.fullName || "Customer",
+    customerEmail: result.payment.customerEmail,
+    company: result.booking.company || "some thing went wong",
+    phone: result.booking.phone || "some thing went wong",
+
+    planName: result.payment.plan.name,
+    amount: result.payment.amount, // if Stripe amount
+    currency: result.payment.currency.toUpperCase(),
+
+    bookingId: result.booking.id,
+  };
+  
+  
+  // Generate PDF
+  const pdfBuffer = await generatePdf(invoiceData);
+
+  // Send Email
+  await sendEmail({
+    to: invoiceData.customerEmail,
+    subject: "Your Payment Invoice",
+    templateName: "invoice",
+    templateData: invoiceData,
+    attachments: [
+      {
+        filename: "invoice.pdf",
+        content: pdfBuffer,
+        contentType: "application/pdf",
+      },
+    ],
   });
 }
+
 
 export const StripeWebhookService = {
   handleStripeWebhookEvent,
