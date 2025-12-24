@@ -21,25 +21,31 @@
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
     }
 
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+    /* ===== HEADER ===== */
+    .header-table {
+      width: 100%;
       border-bottom: 2px solid #eee;
       padding-bottom: 20px;
       margin-bottom: 30px;
     }
 
-    .header h1 {
-      margin: 0;
+    .header-left {
+      font-size: 28px;
+      font-weight: bold;
       color: #c73450;
     }
 
-    .invoice-info {
+    .header-right {
       text-align: right;
       font-size: 14px;
+      line-height: 1.6;
     }
 
+    .header-right strong {
+      color: #000;
+    }
+
+    /* ===== SECTION ===== */
     .section-title {
       font-size: 16px;
       font-weight: bold;
@@ -48,40 +54,46 @@
     }
 
     .details p {
-      margin: 5px 0;
+      margin: 4px 0;
       font-size: 14px;
     }
 
+    /* ===== TABLE ===== */
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
     }
 
-    table thead {
+    thead {
       background: #c73450;
       color: #fff;
     }
 
-    table th,
-    table td {
-      padding: 12px;
+    th, td {
+      padding: 14px;
       border: 1px solid #eee;
-      text-align: left;
       font-size: 14px;
     }
 
-    table td.amount {
+    th {
+      text-align: left;
+    }
+
+    td.amount,
+    th.amount {
       text-align: right;
     }
 
-    .total {
-      margin-top: 30px;
+    /* ===== TOTAL ===== */
+    .total-box {
+      margin-top: 25px;
       text-align: right;
       font-size: 18px;
       font-weight: bold;
     }
 
+    /* ===== FOOTER ===== */
     .footer {
       margin-top: 40px;
       text-align: center;
@@ -90,19 +102,28 @@
     }
   </style>
 </head>
+
 <body>
   <div class="invoice-box">
 
-    <!-- Header -->
-    <div class="header">
-      <h1>Invoice</h1>
-      <div class="invoice-info">
-        <p><strong>Invoice #:</strong> <%= stripeSessionId %></p>
-        <p><strong>Date:</strong> <%= bookingDate.toDateString() %></p>
-      </div>
-    </div>
+    <!-- HEADER -->
+    <table class="header-table">
+      <tr>
+        <td class="header-left">
+          INVOICE
+          <div style="font-size:13px;color:#666;font-weight:normal;">
+            socialverb
+          </div>
+        </td>
+        <td class="header-right">
+          <strong>Invoice ID:</strong> <%= stripeSessionId %><br />
+          <strong>Booking ID:</strong> <%= bookingId %><br />
+          <strong>Date:</strong> <%= invoiceDate.toDateString() %>
+        </td>
+      </tr>
+    </table>
 
-    <!-- Customer Details -->
+    <!-- CUSTOMER DETAILS -->
     <div class="details">
       <div class="section-title">Billed To</div>
       <p><strong>Name:</strong> <%= fullName %></p>
@@ -115,7 +136,7 @@
       <% } %>
     </div>
 
-    <!-- Invoice Table -->
+    <!-- INVOICE TABLE -->
     <table>
       <thead>
         <tr>
@@ -131,12 +152,12 @@
       </tbody>
     </table>
 
-    <!-- Total -->
-    <div class="total">
+    <!-- TOTAL -->
+    <div class="total-box">
       Total: <%= currency %> <%= amount.toFixed(2) %>
     </div>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <div class="footer">
       <p>Thank you for choosing our service.</p>
       <p>This is a system generated invoice. No signature required.</p>

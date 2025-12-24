@@ -2,93 +2,136 @@ import PDFDocument from "pdfkit";
 import AppError from "../middlewares/AppError";
 
 export interface IInvoiceData {
-    stripeSessionId: string;
-    bookingDate: Date;
-    fullName: string;
-    customerEmail: string;
-    company?: string;
-    phone?: string;
-    planName: string;
-    amount: number;
-    currency: string;
+  stripeSessionId: string;
+  bookingDate: Date;
+  fullName: string;
+  customerEmail: string;
+  company?: string;
+  phone?: string;
+  planName: string;
+  amount: number;
+  currency: string;
 }
 
-export const generatePdf = async (invoiceData: IInvoiceData): Promise<Buffer> => {
-    try {
-        return new Promise((resolve, reject) => {
-            const doc = new PDFDocument({ size: "A4", margin: 50 });
-            const buffers: Uint8Array[] = [];
+export const generatePdf = async (data: IInvoiceData): Promise<Buffer> => {
+  try {
+    return new Promise((resolve, reject) => {
+      const doc = new PDFDocument({ size: "A4", margin: 50 });
+      const buffers: Uint8Array[] = [];
 
-            doc.on("data", (chunk) => buffers.push(chunk));
-            doc.on("end", () => resolve(Buffer.concat(buffers)));
-            doc.on("error", (err) => reject(err));
+      doc.on("data", (chunk) => buffers.push(chunk));
+      doc.on("end", () => resolve(Buffer.concat(buffers)));
+      doc.on("error", reject);
 
-            // ===== HEADER =====
-            doc
-                .fontSize(28)
-                .fillColor("#1a1a1a")
-                .text("INVOICE", { align: "center" });
+      /* ================= HEADER ================= */
+      const topY = 50;
 
-            doc.moveDown(0.5);
-            doc
-                .fontSize(12)
-                .fillColor("#555")
-                .text(`Date: ${invoiceData.bookingDate.toLocaleDateString()}`, { align: "right" })
-                .text(`Invoice #: ${invoiceData.stripeSessionId}`, { align: "right" });
+      doc
+        .fontSize(26)
+        .fillColor("#C73450")
+        .text("INVOICE", 50, topY);
 
-            doc.moveDown(2);
+      doc
+        .fontSize(10)
+        .fillColor("#333")
+        .text(`Invoice ID: ${data.stripeSessionId}`, 350, topY)
+        .text(
+          `Date: ${data.bookingDate.toDateString()}`,
+          350,
+          topY + 30
+        );
 
-            // ===== CUSTOMER INFO =====
-            doc.fontSize(14).fillColor("#000").text("Billed To:");
-            doc.moveDown(0.2);
-            doc.fontSize(12).fillColor("#333");
-            doc.text(`Name: ${invoiceData.fullName}`);
-            doc.text(`Email: ${invoiceData.customerEmail}`);
-            if (invoiceData.company) doc.text(`Company: ${invoiceData.company}`);
-            if (invoiceData.phone) doc.text(`Phone: ${invoiceData.phone}`);
+      doc.moveTo(50, topY + 45).lineTo(545, topY + 45).stroke();
 
-            doc.moveDown(2);
+      /* ================= CUSTOMER INFO ================= */
+      let y = topY + 65;
 
-            // ===== PAYMENT INFO =====
-            doc.fontSize(14).fillColor("#000").text("Payment Details:");
-            doc.moveDown(0.5);
+      doc.fontSize(13).fillColor("#000").text("Billed To", 50, y);
+      y += 15;
 
-            const startY = doc.y;
-            const column1X = 50;
-            const column2X = 300;
-            const column3X = 450;
+      doc.fontSize(11).fillColor("#333");
+      doc.text(`Name: ${data.fullName}`, 50, y);
+      y += 15;
 
-            // Table Header
-            doc.fontSize(12).fillColor("#000").text("Plan", column1X, startY);
-            doc.text("Amount", column2X, startY);
-            doc.text("Currency", column3X, startY);
+      doc.text(`Email: ${data.customerEmail}`, 50, y);
+      y += 15;
 
-            doc.moveDown(0.5);
+      if (data.company) {
+        doc.text(`Company: ${data.company}`, 50, y);
+        y += 15;
+      }
 
-            // Table Row
-            doc.fontSize(12).fillColor("#333");
-            doc.text(invoiceData.planName, column1X, doc.y);
-            doc.text(invoiceData.amount.toFixed(2), column2X, doc.y);
-            doc.text(invoiceData.currency, column3X, doc.y);
+      if (data.phone) {
+        doc.text(`Phone: ${data.phone}`, 50, y);
+        y += 15;
+      }
 
-            doc.moveDown(3);
+      /* ================= TABLE ================= */
+      y += 25;
 
-            // ===== FOOTER =====
-            doc
-                .fontSize(12)
-                .fillColor("#1a1a1a")
-                .text("Thank you for your business!", { align: "center" });
+      const tableTop = y;
+      const col1 = 50;
+      const col2 = 350;
+      const col3 = 460;
 
-            doc.moveDown(0.5);
-            doc
-                .fontSize(10)
-                .fillColor("#888")
-                .text("This is a system generated invoice and does not require a signature.", { align: "center" });
+      // Header background
+      doc
+        .rect(50, tableTop, 495, 30)
+        .fill("#C73450");
 
-            doc.end();
-        });
-    } catch (error: any) {
-        console.log(error);
-        throw new AppError(500, `PDF creation error: ${error.message}`);
-    }
+      doc
+        .fillColor("#FFF")
+        .fontSize(11)
+        .text("Service Plan", col1 + 5, tableTop + 8)
+        .text("Amount", col2 + 5, tableTop + 8)
+        .text("Currency", col3 + 5, tableTop + 8);
+
+      // Row
+      const rowY = tableTop + 30;
+
+      doc
+        .fillColor("#000")
+        .rect(50, rowY, 495, 35)
+        .stroke();
+
+      doc
+        .fontSize(11)
+        .text(data.planName, col1 + 5, rowY + 10)
+        .text(data.amount.toFixed(2), col2 + 5, rowY + 10)
+        .text(data.currency.toUpperCase(), col3 + 5, rowY + 10);
+
+      /* ================= TOTAL ================= */
+      y = rowY + 55;
+
+      doc
+        .fontSize(10)
+        .fillColor("#000")
+        .text(
+          `Total: ${data.currency.toUpperCase()} ${data.amount.toFixed(2)}`,
+          350,
+          y
+        );
+
+      /* ================= FOOTER ================= */
+      doc
+        .fontSize(10)
+        .fillColor("#777")
+        .text(
+          "Thank you for choosing our service.",
+          50,
+          760,
+          { align: "center" }
+        )
+        .text(
+          "This is a system generated invoice. No signature required.",
+          50,
+          775,
+          { align: "center" }
+        );
+
+      doc.end();
+    });
+  } catch (error: any) {
+    throw new AppError(500, `PDF creation error: ${error.message}`);
+  }
 };

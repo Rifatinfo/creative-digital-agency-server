@@ -20,14 +20,17 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
     // Create booking
     const booking = await tx.booking.create({
       data: {
-        fullName: payload.fullName,
-        customerEmail: payload.customerEmail,
-        company: payload.company,
-        phone: payload.phone,
-        projectDetails: payload.projectDetails,
-        planId: payload.planId,
+        // fullName: payload.fullName,
+        // customerEmail: payload.customerEmail,
+        // company: payload.company,
+        // phone: payload.phone,
+        // projectDetails: payload.projectDetails,
+        // planId: payload.planId,
+        ...payload
       },
     });
+    console.log(booking);
+    
     const stripeSessionId = uuidv4()
     const payment = await tx.payment.create({
       data: {
@@ -45,6 +48,7 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
       }
 
     });
+    console.log(payment);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
