@@ -110,7 +110,6 @@ model ServicePlan {
   updatedAt   DateTime @updatedAt
 
   payments Payment[]
-
   bookings Booking[]
 }
 
