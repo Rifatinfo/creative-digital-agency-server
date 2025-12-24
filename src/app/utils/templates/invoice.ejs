@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    .invoice-box {
+      max-width: 800px;
+      margin: 40px auto;
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 20px;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #c73450;
+    }
+
+    .invoice-info {
+      text-align: right;
+      font-size: 14px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #444;
+    }
+
+    .details p {
+      margin: 5px 0;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table thead {
+      background: #c73450;
+      color: #fff;
+    }
+
+    table th,
+    table td {
+      padding: 12px;
+      border: 1px solid #eee;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    table td.amount {
+      text-align: right;
+    }
+
+    .total {
+      margin-top: 30px;
+      text-align: right;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .footer {
+      margin-top: 40px;
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="invoice-box">
+
+    <!-- Header -->
+    <div class="header">
+      <h1>Invoice</h1>
+      <div class="invoice-info">
+        <p><strong>Invoice #:</strong> <%= stripeSessionId %></p>
+        <p><strong>Date:</strong> <%= bookingDate.toDateString() %></p>
+      </div>
+    </div>
+
+    <!-- Customer Details -->
+    <div class="details">
+      <div class="section-title">Billed To</div>
+      <p><strong>Name:</strong> <%= fullName %></p>
+      <p><strong>Email:</strong> <%= customerEmail %></p>
+      <% if (company) { %>
+        <p><strong>Company:</strong> <%= company %></p>
+      <% } %>
+      <% if (phone) { %>
+        <p><strong>Phone:</strong> <%= phone %></p>
+      <% } %>
+    </div>
+
+    <!-- Invoice Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Service Plan</th>
+          <th class="amount">Amount</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><%= planName %></td>
+          <td class="amount"><%= currency %> <%= amount.toFixed(2) %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- Total -->
+    <div class="total">
+      Total: <%= currency %> <%= amount.toFixed(2) %>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>Thank you for choosing our service.</p>
+      <p>This is a system generated invoice. No signature required.</p>
+    </div>
+
+  </div>
+</body>
+</html>

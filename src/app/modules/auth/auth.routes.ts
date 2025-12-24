@@ -9,7 +9,7 @@ router.post("/login", AuthController.login);
 router.post("/logout", AuthController.logout);
 router.post("/change-password", auth(UserRole.ADMIN, UserRole.CLIENT), AuthController.changePassword);
 router.post( "/forgot-password", AuthController.forgotPassword);
-// router.post('/reset-password', AuthController.resetPassword);
+router.post('/reset-password', AuthController.resetPassword);
 
 
 export const AuthRouters = router;
