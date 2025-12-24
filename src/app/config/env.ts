@@ -16,16 +16,20 @@ interface EnvConfig {
     SMTP_PORT: string;
     SMTP_HOST: string;
     SMTP_FROM: string;
+    reset_pass_secret : string;
+    reset_pass_token_expires_in : string;
+    reset_pass_link : string;
 }
 
 const loadEnvVariable = (): EnvConfig => {
-    const requiredEnvVariable: string[] = ["PORT", "DATABASE_URL", "NODE_ENV", "CLOUDINARY_API_SECRET", "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "STRIPE_SECRET_KEY", "SMTP_USER", "SMTP_PASS", "SMTP_PORT", "SMTP_HOST", "SMTP_FROM"]
+    const requiredEnvVariable: string[] = ["PORT", "DATABASE_URL", "NODE_ENV", "CLOUDINARY_API_SECRET", "CLOUDINARY_CLOUD_NAME", "CLOUDINARY_API_KEY", "STRIPE_SECRET_KEY", "SMTP_USER", "SMTP_PASS", "SMTP_PORT", "SMTP_HOST", "SMTP_FROM", "JWT_RESET_PASS_SECRET", "JWT_RESET_PASS_EXPIRES_IN", "RESET_PASS_LINK"]
 
     requiredEnvVariable.forEach(key => {
         if (!process.env[key]) {
             throw new Error(`Missing required environment variable ${key}`)
         }
     })
+
 
 
     return {
@@ -41,6 +45,9 @@ const loadEnvVariable = (): EnvConfig => {
         SMTP_PORT: process.env.SMTP_PORT as string,
         SMTP_HOST: process.env.SMTP_HOST as string,
         SMTP_FROM: process.env.SMTP_FROM as string,
+        reset_pass_secret: process.env.JWT_RESET_PASS_SECRET as string,
+        reset_pass_token_expires_in: process.env.JWT_RESET_PASS_EXPIRES_IN as string,
+        reset_pass_link : process.env.RESET_PASS_LINK as string
     }
 }
 
