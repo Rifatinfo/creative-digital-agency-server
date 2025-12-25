@@ -62,7 +62,6 @@ model Admin {
 
   @@map("admin")
 }
-
 model Customer {
   id           String   @id @default(uuid())
   email        String   @unique

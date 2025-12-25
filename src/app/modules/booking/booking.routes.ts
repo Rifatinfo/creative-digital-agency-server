@@ -9,3 +9,4 @@ router.post("/create", BookingController.createBooking)
 router.get("/order-history", auth(UserRole.CLIENT) ,BookingController.getCustomerOrderHistory);
 
 export const BookingRouter =  router ;
+
