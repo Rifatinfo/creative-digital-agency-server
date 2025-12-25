@@ -83,6 +83,19 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
   return result;
 }
 
+const getCustomerOrderHistory = async (email: string) => {
+  return prisma.booking.findMany({
+    where: { customerEmail: email },
+    include: {
+      plan: true,
+      payment: true,
+    },
+    orderBy: { createdAt: "desc" },
+  });
+};
+
+
 export const BookingService = {
-  createBookingIntro
+  createBookingIntro,
+  getCustomerOrderHistory
 }
