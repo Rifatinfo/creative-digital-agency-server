@@ -5,7 +5,11 @@ import { UserRole } from "../../../generated/prisma/enums";
 
 const router = Router();
 
-router.post("/login", AuthController.login);
+router.post("/login" , AuthController.login);
+router.post(
+    '/refresh-token',
+    AuthController.refreshToken
+)
 router.post("/logout", AuthController.logout);
 router.post("/change-password", auth(UserRole.ADMIN, UserRole.CLIENT), AuthController.changePassword);
 router.post( "/forgot-password", AuthController.forgotPassword);
