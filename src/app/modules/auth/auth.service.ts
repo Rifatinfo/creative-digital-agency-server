@@ -15,7 +15,7 @@ const login = async (payload: { email: string, password: string }) => {
             status: UserStatus.ACTIVE
         }
     })
-    console.log(payload);
+    // console.log(payload);
 
     if (!user) {
         throw new AppError(StatusCodes.NOT_FOUND, "User not found");
@@ -27,13 +27,44 @@ const login = async (payload: { email: string, password: string }) => {
     if (!isCorrectPassword) {
         throw new AppError(StatusCodes.BAD_REQUEST, "Password is incorrect")
     }
-    const accessToken = jwtHelper.generateToken({ email: user.email, role: user.role }, "abcd", "1h");
+    const accessToken = jwtHelper.generateToken({ email: user.email, role: user.role }, "abcd", "10h");
     const refreshToken = jwtHelper.generateToken({ email: user.email, role: user.role }, "abcd", "90d");
     return {
         accessToken,
         refreshToken,
     }
 }
+
+const refreshToken = async (token: string) => {
+    let decodedData;
+    try {
+        decodedData = jwtHelper.verifyToken(token, envVars.REFRESH_TOKEN_SECRET as Secret);
+    }
+    catch (err) {
+        throw new Error("You are not authorized!")
+    }
+
+    const userData = await prisma.user.findUniqueOrThrow({
+        where: {
+            email: decodedData.email,
+            status: UserStatus.ACTIVE
+        }
+    });
+
+    const accessToken = jwtHelper.generateToken({
+        email: userData.email,
+        role: userData.role
+    },
+         envVars.JWT_SECRET as Secret,
+        envVars.JWT_SECRET as string
+    );
+
+    return {
+        accessToken,
+        
+    };
+
+};
 
 const changePassword = async (user: any, payload: any) => {
     const userData = await prisma.user.findUniqueOrThrow({
@@ -78,7 +109,7 @@ const forgotPassword = async (payload: { email: string }) => {
     );
 
     const resetPassLink = envVars.reset_pass_link + `?userId=${userData.id}&token=${resetPassToken}`;
-    
+
 
     try {
         await sendEmail({
@@ -97,7 +128,7 @@ const forgotPassword = async (payload: { email: string }) => {
 };
 
 const resetPassword = async (token: string, payload: { id: string, password: string }) => {
-     if (!payload.password) {
+    if (!payload.password) {
         throw new AppError(StatusCodes.BAD_REQUEST, "Password is required");
     }
 
@@ -128,11 +159,11 @@ const resetPassword = async (token: string, payload: { id: string, password: str
 }
 
 
-
 export const AuthService = {
     login,
     changePassword,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    refreshToken
 }
 

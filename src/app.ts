@@ -5,28 +5,36 @@ import cors from "cors";
 import express from "express";
 import cookieParser from 'cookie-parser';
 import { router } from "./app/routes";
-import { StripeWebhookController } from "./app/modules/payment/payment.controller";
 
 
 const app = express();
 
 // Middleware
-app.use(cors()); 
-app.use(compression()); 
+// app.use(express.json()); 
+// app.use(cors()); 
+// app.use(compression()); 
+// app.use(cookieParser());
 
-app.use(cookieParser());
 // app.post(
 //     "/api/v1/webhook",
 //     express.raw({ type: "application/json" }),
 //     StripeWebhookController.handleStripeWebhookEvent
 // );
-app.use(express.json()); 
 app.use(
   cors({
     origin: ["http://localhost:3000"],
     credentials: true,
   })
 );
+app.use(cookieParser());
+
+// 3️⃣ Compress responses
+app.use(compression());
+
+// 4️⃣ Parse JSON body
+app.use(express.json());
+
+
 
 app.use("/api/v1", router);
 

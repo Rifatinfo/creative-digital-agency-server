@@ -4,9 +4,12 @@ import { AuthService } from "./auth.service";
 import { sendResponse } from "../../middlewares/sendResponse";
 import { StatusCodes } from "http-status-codes";
 
+
+
 const login = catchAsync(async (req: Request, res: Response) => {
     const result = await AuthService.login(req.body);
     const { accessToken, refreshToken } = result;
+
     res.cookie("accessToken", accessToken, {
         secure: true,
         httpOnly: true,
@@ -20,16 +23,39 @@ const login = catchAsync(async (req: Request, res: Response) => {
         maxAge: 1000 * 60 * 60 * 24 * 90
     })
 
+ 
     sendResponse(res, {
         statusCode: 201,
         success: true,
-        message: "User Login successfully",
+        message: "User logging successfully!",
         data: {
             accessToken,
             refreshToken
         }
     })
 })
+
+const refreshToken = catchAsync(async (req: Request, res: Response) => {
+    const { refreshToken } = req.cookies;
+
+    const result = await AuthService.refreshToken(refreshToken);
+    res.cookie("accessToken", result.accessToken, {
+        secure: true,
+        httpOnly: true,
+        sameSite: "none",
+        maxAge: 1000 * 60 * 60,
+    });
+
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Access token genereated successfully!",
+        data: {
+            message: "Access token genereated successfully!",
+        },
+    });
+});
+
 
 const logout = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
@@ -87,10 +113,13 @@ const resetPassword = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+
+
 export const AuthController = {
     login,
     logout,
     changePassword,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    refreshToken
 }
