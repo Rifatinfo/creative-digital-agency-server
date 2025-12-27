@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes";
 import { jwtHelper } from "./jwthelper";
 import AppError from "./AppError";
+import { envVars } from "../config/env";
 
 const auth = (...roles : string[]) => {
     return async (req : Request & {user?: any}, res : Response, next : NextFunction) => {
@@ -13,7 +14,7 @@ const auth = (...roles : string[]) => {
               throw new AppError(StatusCodes.UNAUTHORIZED, "You are not authorized!!")
            }
 
-           const verifiedUser = jwtHelper.verifyToken(token, "abcd");
+           const verifiedUser = jwtHelper.verifyToken(token, envVars.JWT_SECRET);
            req.user = verifiedUser;
 
            if(roles.length && !roles.includes(verifiedUser.role)){
