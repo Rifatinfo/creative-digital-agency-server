@@ -3,6 +3,8 @@ import { prisma } from "../../config/db"
 import AppError from "../../middlewares/AppError"
 import { ICreateBookingPayload } from "./booking.interface"
 import { v4 as uuidv4 } from 'uuid';
+
+
 import { stripe } from "../../helper/strip";
 
 const createBookingIntro = async (payload: ICreateBookingPayload) => {
@@ -20,17 +22,17 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
     // Create booking
     const booking = await tx.booking.create({
       data: {
-        // fullName: payload.fullName,
-        // customerEmail: payload.customerEmail,
-        // company: payload.company,
-        // phone: payload.phone,
-        // projectDetails: payload.projectDetails,
-        // planId: payload.planId,
-        ...payload
+        fullName: payload.fullName,
+        customerEmail: payload.customerEmail,
+        company: payload.company,
+        phone: payload.phone,
+        projectDetails: payload.projectDetails,
+        planId: payload.planId,
+        // ...payload
       },
     });
     console.log(booking);
-    
+
     const stripeSessionId = uuidv4()
     const payment = await tx.payment.create({
       data: {
@@ -48,6 +50,8 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
       }
 
     });
+ 
+
     console.log(payment);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
@@ -69,9 +73,9 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
         paymentId: payment.id,
         bookingId: booking.id,
       },
-   
-      success_url: `https://www.programming-hero.com/payment-success?bookingId=${booking.id}&paymentId=${payment.id}`,
-      cancel_url: `https://next.programming-hero.com/`,
+
+      success_url: `http://localhost:3000/payment-success?bookingId=${booking.id}&paymentId=${payment.id}`,
+      cancel_url: `http://localhost:3000`,
     });
 
     return {
