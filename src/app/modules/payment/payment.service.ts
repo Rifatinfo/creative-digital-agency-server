@@ -84,6 +84,9 @@ const makePaymentDone = async (bookingId: string, paymentId: string) => {
     return { payment, booking };
   });
 
+
+
+
   // invoice generation and email sending can be done here later 
   const invoiceData: IInvoiceData = {
     stripeSessionId: result.payment.stripeSessionId || result.payment.id,
