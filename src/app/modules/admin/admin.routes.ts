@@ -23,10 +23,18 @@ router.get(
     UserController.getByIdFromDB
 );
 
-router.patch("/:id", auth(UserRole.ADMIN) ,fileUploader.upload.single('file'), (req : Request, res : Response, next : NextFunction) => {
-    req.body = JSON.parse(req.body.data)
-    return UserController.updateAminProfile(req, res, next)
-});
+router.patch(
+  "/:id",
+  auth(UserRole.ADMIN), 
+  fileUploader.upload.single("file"),
+  (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    return UserController.updateAdminProfileById(req, res, next);
+  }
+);
+
 
 router.delete(
     '/:id',

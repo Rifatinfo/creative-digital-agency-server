@@ -71,11 +71,24 @@ const changeProfileStatus = catchAsync(async (req : Request, res : Response) => 
     });
 });
 
+const deleteFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await UserService.deleteFromDB(id);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "User data soft deleted!",
+        data: result
+    })
+});
+
 export const UserController = {
     createCustomer,
     getAllFromDB,
     getMyProfile,
     updateMyProfile,
-    changeProfileStatus
+    changeProfileStatus,
+    deleteFromDB
 }
 

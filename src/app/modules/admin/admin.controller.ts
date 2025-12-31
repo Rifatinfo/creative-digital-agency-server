@@ -33,19 +33,26 @@ const getAllFromDB = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const updateAminProfile = catchAsync(async (req : Request, res : Response) => {
-    const user = req.user;
-    if (!user) {
-        throw new AppError(StatusCodes.UNAUTHORIZED, "Unauthorized");
-    }
-    const result = await UserService.updateMyProfile(req, user as IAuthUser);
+const updateAdminProfileById = catchAsync(
+  async (req: Request, res: Response) => {
+    const authUser = req.user;
+    const adminId = req.params.id;
+
+    const result = await UserService.updateAdminById(
+      req,
+      adminId,
+      authUser as IAuthUser
+    );
+
     sendResponse(res, {
-        statusCode: StatusCodes.OK,
-        message: "Admin profile data Updated fetched!",
-        success: true,
-        data: result
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "Admin profile updated successfully",
+      data: result,
     });
-})
+  }
+);
+
 
 const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
     const { id } = req.params;
@@ -74,7 +81,7 @@ const deleteFromDB = catchAsync(async (req: Request, res: Response) => {
 export const UserController = {
     createAdmin,
     getAllFromDB,
-    updateAminProfile,
+    updateAdminProfileById,
     getByIdFromDB,
     deleteFromDB
 }

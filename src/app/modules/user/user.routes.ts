@@ -18,11 +18,18 @@ router.get(
     UserController.getAllFromDB
 );
 
+
 router.patch("/update-my-profile", auth(UserRole.CLIENT, UserRole.ADMIN), fileUploader.upload.single('file'), (req : Request, res : Response, next : NextFunction) => {
     req.body = JSON.parse(req.body.data)
     return UserController.updateMyProfile(req, res, next)
 });
-router.get("/me",auth(UserRole.CLIENT, UserRole.ADMIN) ,UserController.getMyProfile);
+router.get("/me",auth(UserRole.ADMIN) ,UserController.getMyProfile);
 router.patch('/:id/status', auth(UserRole.ADMIN, UserRole.CLIENT), UserController.changeProfileStatus);
+
+// dashboard use
+router.patch(
+    '/:id',
+    UserController.deleteFromDB
+);
 
 export const UserRouters = router;

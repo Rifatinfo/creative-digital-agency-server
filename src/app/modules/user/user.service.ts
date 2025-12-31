@@ -6,6 +6,8 @@ import { IOptions, paginationHelper } from "../../helper/paginationHelper";
 import { Prisma, UserRole, UserStatus } from "../../../generated/prisma/client";
 import { userSearchField } from "./user.constant";
 import { IAuthUser } from "../../../types/common";
+import AppError from "../../middlewares/AppError";
+import { StatusCodes } from "http-status-codes";
 
 const createCustomer = async (req: Request) => {
     let profilePhotoUrl: string | undefined;
@@ -46,7 +48,12 @@ const getAllFromDB = async (params: any, options: IOptions) => {
     const { page, limit, skip, sortBy, sortOrder } = paginationHelper.calculatePagination(options);
     const { searchTerm, ...filterData } = params;
 
-    const andConditions: Prisma.UserWhereInput[] = [];
+    // const andConditions: Prisma.UserWhereInput[] = [];
+     const andConditions: Prisma.UserWhereInput[] = [
+    {
+      role: "CLIENT",
+    },
+  ];
     if (searchTerm) {
         andConditions.push({
             OR: userSearchField.map(field => ({
@@ -210,11 +217,22 @@ const changeProfileStatus = async (id : string, payload : {status : UserStatus})
 }
 
 
+  const deleteFromDB = async (id: string) => {
+  return await prisma.user.update({
+    where: { id },
+    data: { status: UserStatus.INACTIVE },
+  });
+};
+
+
+
+
 export const UserService = {
     createCustomer,
     getAllFromDB,
     getMyProfile,
     updateMyProfile,
-    changeProfileStatus
+    changeProfileStatus,
+    deleteFromDB
 }
 

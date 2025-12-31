@@ -101,15 +101,20 @@ const getAllFromDB = async (params: any, options: IOptions) => {
 }
 
 
-const updateMyProfile = async (req: Request, authUser?: IAuthUser) => {
-  if (!authUser?.email) {
-    throw new AppError(StatusCodes.UNAUTHORIZED, "Unauthorized");
+const updateAdminById = async (
+  req: Request,
+  adminId: string,
+  authUser?: IAuthUser
+) => {
+  if (!authUser || authUser.role !== UserRole.ADMIN) {
+    throw new AppError(StatusCodes.FORBIDDEN, "Forbidden");
   }
 
-  // Find active user
-  const user = await prisma.user.findUniqueOrThrow({
+  // Find target admin
+  const admin = await prisma.user.findUniqueOrThrow({
     where: {
-      email: authUser.email,
+      id: adminId,
+      role: UserRole.ADMIN,
       status: UserStatus.ACTIVE,
     },
   });
@@ -129,20 +134,14 @@ const updateMyProfile = async (req: Request, authUser?: IAuthUser) => {
     profilePhoto,
   };
 
-  // Handle password update
   if (password) {
     updateData.password = await bcrypt.hash(password, 10);
   }
 
-  // Update ONLY user table
-  const updatedUser = await prisma.user.update({
-    where: {
-      id: user.id,
-    },
+  return prisma.user.update({
+    where: { id: admin.id },
     data: updateData,
   });
-
-  return updatedUser;
 };
 
 const getByIdFromDB = async (id: string): Promise<Admin | null> => {
@@ -187,7 +186,7 @@ const deleteFromDB = async (id: string) => {
 export const UserService = {
   createAdmin,
   getAllFromDB,
-  updateMyProfile,
+  updateAdminById,
   getByIdFromDB,
   deleteFromDB
 }
