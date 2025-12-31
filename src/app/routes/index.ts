@@ -16,7 +16,7 @@ const moduleRouters = [
         route : UserRouters
     },
     {
-        path : "/user",
+        path : "/admin",
         route : AdminRouters
     },
     {
