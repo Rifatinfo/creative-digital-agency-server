@@ -83,12 +83,25 @@ const deleteFromDB = catchAsync(async (req: Request, res: Response) => {
     })
 });
 
+const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+    
+    const result = await UserService.getByIdFromDB(id);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Customer data fetched by id!",
+        data: result
+    });
+});
+
 export const UserController = {
     createCustomer,
     getAllFromDB,
     getMyProfile,
     updateMyProfile,
     changeProfileStatus,
-    deleteFromDB
+    deleteFromDB,
+    getByIdFromDB
 }
 

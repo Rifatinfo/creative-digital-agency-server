@@ -3,7 +3,7 @@ import { fileUploader } from "../../helper/fileUploader";
 import bcrypt from "bcryptjs";
 import { prisma } from "../../config/db";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
-import { Prisma, UserRole, UserStatus } from "../../../generated/prisma/client";
+import { Customer, Prisma, UserRole, UserStatus } from "../../../generated/prisma/client";
 import { userSearchField } from "./user.constant";
 import { IAuthUser } from "../../../types/common";
 import AppError from "../../middlewares/AppError";
@@ -225,7 +225,16 @@ const changeProfileStatus = async (id : string, payload : {status : UserStatus})
 };
 
 
+const getByIdFromDB = async (id: string) => {
+  const result = await prisma.user.findUnique({
+    where: {
+      id,
+      role: "CLIENT",
+    }
+  })
 
+  return result;
+};
 
 export const UserService = {
     createCustomer,
@@ -233,6 +242,7 @@ export const UserService = {
     getMyProfile,
     updateMyProfile,
     changeProfileStatus,
-    deleteFromDB
+    deleteFromDB,
+    getByIdFromDB
 }
 

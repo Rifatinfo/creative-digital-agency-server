@@ -14,7 +14,7 @@ router.post("/create-admin", fileUploader.upload.single('file'),
     });
 
 router.get(
-    "/", 
+    "/",
     UserController.getAllFromDB
 );
 
@@ -25,7 +25,6 @@ router.get(
 
 router.patch(
   "/:id",
-  auth(UserRole.ADMIN), 
   fileUploader.upload.single("file"),
   (req: Request, res: Response, next: NextFunction) => {
     if (req.body.data) {

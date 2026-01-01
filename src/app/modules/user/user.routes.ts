@@ -14,22 +14,27 @@ router.post("/create-customer", fileUploader.upload.single("file"),
 });
 
 router.get(
-    "/", auth(UserRole.ADMIN),
+    "/", 
     UserController.getAllFromDB
 );
 
 
-router.patch("/update-my-profile", auth(UserRole.CLIENT, UserRole.ADMIN), fileUploader.upload.single('file'), (req : Request, res : Response, next : NextFunction) => {
+router.patch("/", auth(UserRole.CLIENT, UserRole.ADMIN), fileUploader.upload.single('file'), (req : Request, res : Response, next : NextFunction) => {
     req.body = JSON.parse(req.body.data)
     return UserController.updateMyProfile(req, res, next)
 });
 router.get("/me",auth(UserRole.ADMIN) ,UserController.getMyProfile);
-router.patch('/:id/status', auth(UserRole.ADMIN, UserRole.CLIENT), UserController.changeProfileStatus);
+router.patch('/:id/status', UserController.changeProfileStatus);
 
 // dashboard use
 router.patch(
     '/:id',
     UserController.deleteFromDB
+);
+
+router.get(
+    '/:id',
+    UserController.getByIdFromDB
 );
 
 export const UserRouters = router;
