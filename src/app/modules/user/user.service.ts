@@ -236,6 +236,37 @@ const getByIdFromDB = async (id: string) => {
   return result;
 };
 
+const deleteHardFromDB = async (id: string) => {
+  return await prisma.$transaction(async (tx) => {
+    const user = await tx.user.findUnique({
+      where: { id },
+    });
+
+    if (!user) {
+      throw new AppError(StatusCodes.NOT_FOUND, "User not found");
+    }
+
+    // Delete dependents FIRST
+    await tx.campaign.deleteMany({
+      where: { adminEmail: user.email },
+    });
+
+    await tx.admin.deleteMany({
+      where: { email: user.email },
+    });
+
+    await tx.customer.deleteMany({
+      where: { email: user.email }, 
+    });
+
+    // Finally delete user
+    return await tx.user.delete({
+      where: { id },
+    });
+  });
+};
+
+
 export const UserService = {
     createCustomer,
     getAllFromDB,
@@ -243,6 +274,7 @@ export const UserService = {
     updateMyProfile,
     changeProfileStatus,
     deleteFromDB,
-    getByIdFromDB
+    getByIdFromDB,
+    deleteHardFromDB
 }
 

@@ -95,6 +95,19 @@ const getByIdFromDB = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+
+const deleteHardFromDB = catchAsync(async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    const result = await UserService.deleteHardFromDB(id);
+    sendResponse(res, {
+        statusCode: StatusCodes.OK,
+        success: true,
+        message: "Customer hard data deleted!",
+        data: result
+    })
+});
+
 export const UserController = {
     createCustomer,
     getAllFromDB,
@@ -102,6 +115,7 @@ export const UserController = {
     updateMyProfile,
     changeProfileStatus,
     deleteFromDB,
-    getByIdFromDB
+    getByIdFromDB,
+    deleteHardFromDB
 }
 

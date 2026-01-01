@@ -37,4 +37,10 @@ router.get(
     UserController.getByIdFromDB
 );
 
+// hard delete
+router.delete(
+    '/:id',
+    UserController.deleteHardFromDB
+);
+
 export const UserRouters = router;
