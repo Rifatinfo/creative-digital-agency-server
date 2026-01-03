@@ -7,6 +7,7 @@ import { ServiceRoutes } from "../modules/service/service.route";
 import { ServicePlanRoutes } from "../modules/servicePlan/servicePlan.route";
 import { BookingRouter } from "../modules/booking/booking.routes";
 import { PaymentRoute } from "../modules/payment/payment.route";
+import { MetaRoutes } from "../modules/meta/meta.routes";
 
 export const router = Router();
 
@@ -42,7 +43,11 @@ const moduleRouters = [
     {
         path : "/payment",
         route : PaymentRoute
-    }
+    },
+    {
+        path : "/meta",
+        route : MetaRoutes
+    },
 ]
 
 moduleRouters.forEach((route) => {

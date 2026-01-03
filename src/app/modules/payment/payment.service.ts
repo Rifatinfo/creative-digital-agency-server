@@ -103,8 +103,8 @@ const makePaymentDone = async (bookingId: string, paymentId: string) => {
 
     bookingId: result.booking.id,
   };
-  
-  
+
+
   // Generate PDF
   const pdfBuffer = await generatePdf(invoiceData);
 
@@ -125,8 +125,35 @@ const makePaymentDone = async (bookingId: string, paymentId: string) => {
 }
 
 
+const donePayments = async () => {
+  const payments = await prisma.payment.findMany({
+    where: {
+      status: PaymentStatus.PAID, 
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return payments;
+}
+const doneBookings = async () => {
+  const bookings = await prisma.booking.findMany({
+    where: {
+      status: BookingStatus.CONFIRMED, 
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  return  bookings;
+}
+
 export const StripeWebhookService = {
   handleStripeWebhookEvent,
-  makePaymentDone
+  makePaymentDone,
+  donePayments,
+  doneBookings
 };
 

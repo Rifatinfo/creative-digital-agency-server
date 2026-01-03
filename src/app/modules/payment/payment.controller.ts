@@ -44,8 +44,31 @@ const makePaymentDone = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
+ const donePayments = catchAsync(async (req: Request, res: Response) => {
+  const result = await StripeWebhookService.donePayments();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Done Payments fetched successfully",
+    data: result,
+  });
+});
+ const doneBooking = catchAsync(async (req: Request, res: Response) => {
+  const result = await StripeWebhookService.doneBookings();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Done Bookings fetched successfully",
+    data: result,
+  });
+});
+
 export const StripeWebhookController = {
     handleStripeWebhookEvent,
     makePaymentDone,
+    donePayments,
+    doneBooking
 }
 
