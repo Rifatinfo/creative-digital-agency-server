@@ -92,7 +92,16 @@ const getCustomerOrderHistory = async (email: string) => {
     where: { customerEmail: email },
     include: {
       plan: true,
-      payment: true,
+       payment: {
+        include: {
+          plan: {
+            select: {
+              serviceId: true,
+              ctaText: true,
+            },
+          },
+        },
+      },
     },
     orderBy: { createdAt: "desc" },
   });

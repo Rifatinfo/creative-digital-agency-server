@@ -21,11 +21,10 @@ const createBooking = catchAsync(async (req: Request, res: Response) => {
 const getCustomerOrderHistory = catchAsync( async (req: Request, res: Response) => {
     //  email comes from token, not frontend
     const customerEmail = req.user?.email;
-
+   
     if (!customerEmail) {
        throw new AppError(StatusCodes.BAD_REQUEST, "Customer email is not found")
     }
-
     const result = await BookingService.getCustomerOrderHistory(customerEmail);
 
     sendResponse(res, {
