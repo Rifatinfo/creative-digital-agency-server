@@ -17,8 +17,8 @@ import type * as Prisma from "./prismaNamespace"
 
 const config: runtime.GetPrismaClientConfig = {
   "previewFeatures": [],
-  "clientVersion": "7.0.1",
-  "engineVersion": "f09f2815f091dbba658cdcd2264306d88bb5bda6",
+  "clientVersion": "7.2.0",
+  "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "postgresql",
   "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client\"\n  output   = \"../src/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n}\n\nmodel User {\n  id           String     @id @default(uuid())\n  name         String?\n  email        String     @unique\n  profilePhoto String?\n  role         UserRole   @default(CLIENT)\n  password     String\n  createdAt    DateTime   @default(now())\n  updatedAt    DateTime   @updatedAt\n  status       UserStatus @default(ACTIVE)\n  // stripeCustomerId String? @unique\n  admin        Admin?\n  customer     Customer?\n\n  @@map(\"user\")\n}\n\nmodel Campaign {\n  id          Int     @id @default(autoincrement())\n  title       String\n  category    String\n  subcategory String\n  thumbnail   String\n  videoUrl    String\n  views       String\n  dateLabel   String\n  brand       String?\n  duration    String\n  featured    Boolean @default(false)\n\n  adminEmail String\n  admin      Admin  @relation(fields: [adminEmail], references: [email])\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n}\n\nmodel Admin {\n  id           String     @id @default(uuid())\n  email        String     @unique\n  name         String?\n  profilePhoto String?\n  createdAt    DateTime   @default(now())\n  updatedAt    DateTime   @updatedAt\n  user         User       @relation(fields: [email], references: [email])\n  campaigns    Campaign[]\n\n  @@map(\"admin\")\n}\n\nmodel Customer {\n  id           String   @id @default(uuid())\n  email        String   @unique\n  phone        String?\n  name         String?\n  address      String?\n  profilePhoto String?\n  isDeleted    Boolean  @default(false)\n  createdAt    DateTime @default(now())\n  updatedAt    DateTime @updatedAt\n\n  user User @relation(fields: [email], references: [email])\n\n  @@map(\"customer\")\n}\n\nmodel Service {\n  id          String   @id @default(uuid())\n  title       String\n  slug        String?\n  description String?\n  isActive    Boolean  @default(true)\n  createdAt   DateTime @default(now())\n  updatedAt   DateTime @updatedAt\n\n  servicePlans ServicePlan[]\n}\n\nmodel ServicePlan {\n  id            String  @id @default(uuid())\n  name          String\n  price         Int\n  currency      String\n  period        String\n  description   String\n  features      Json\n  ctaText       String\n  highlighted   Boolean @default(false)\n  stripePriceId String?\n\n  serviceId String\n  service   Service @relation(fields: [serviceId], references: [id])\n\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n\n  payments Payment[]\n  bookings Booking[]\n}\n\nmodel Payment {\n  id                String        @id @default(uuid())\n  stripeSessionId   String        @unique\n  stripePaymentId   String? // pi_xxx  ← TRANSACTION ID using uuid\n  amount            Int\n  email             String?\n  currency          String\n  status            PaymentStatus @default(PENDING)\n  customerEmail     String\n  fullName          String?\n  company           String?\n  phone             String?\n  projectDetails    String?\n  planId            String\n  plan              ServicePlan   @relation(fields: [planId], references: [id])\n  paymentGetWayData Json?\n  createdAt         DateTime      @default(now())\n  invoiceUrl        String?\n  bookings          Booking?\n}\n\nmodel Booking {\n  id             String  @id @default(uuid())\n  fullName       String\n  customerEmail  String\n  company        String?\n  phone          String?\n  projectDetails String?\n\n  status BookingStatus @default(PENDING)\n\n  planId String\n  plan   ServicePlan @relation(fields: [planId], references: [id])\n\n  paymentId String?  @unique\n  payment   Payment? @relation(fields: [paymentId], references: [id])\n  createdAt DateTime @default(now())\n}\n\nenum BookingStatus {\n  PENDING\n  PAID\n  CONFIRMED\n  CANCELLED\n}\n\nenum PaymentStatus {\n  PENDING\n  PAID\n  FAILED\n}\n\nenum UserRole {\n  ADMIN\n  CLIENT\n}\n\nenum UserStatus {\n  ACTIVE\n  INACTIVE\n}\n",
   "runtimeDataModel": {
@@ -62,7 +62,7 @@ export interface PrismaClientConstructor {
    * const users = await prisma.user.findMany()
    * ```
    * 
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+   * Read more in our [docs](https://pris.ly/d/client).
    */
 
   new <
@@ -84,7 +84,7 @@ export interface PrismaClientConstructor {
  * const users = await prisma.user.findMany()
  * ```
  * 
- * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client).
+ * Read more in our [docs](https://pris.ly/d/client).
  */
 
 export interface PrismaClient<
@@ -113,7 +113,7 @@ export interface PrismaClient<
    * const result = await prisma.$executeRaw`UPDATE User SET cool = ${true} WHERE email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -125,7 +125,7 @@ export interface PrismaClient<
    * const result = await prisma.$executeRawUnsafe('UPDATE User SET cool = $1 WHERE email = $2 ;', true, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $executeRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<number>;
 
@@ -136,7 +136,7 @@ export interface PrismaClient<
    * const result = await prisma.$queryRaw`SELECT * FROM User WHERE id = ${1} OR email = ${'user@email.com'};`
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRaw<T = unknown>(query: TemplateStringsArray | Prisma.Sql, ...values: any[]): Prisma.PrismaPromise<T>;
 
@@ -148,7 +148,7 @@ export interface PrismaClient<
    * const result = await prisma.$queryRawUnsafe('SELECT * FROM User WHERE id = $1 OR email = $2;', 1, 'user@email.com')
    * ```
    *
-   * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/raw-database-access).
+   * Read more in our [docs](https://pris.ly/d/raw-queries).
    */
   $queryRawUnsafe<T = unknown>(query: string, ...values: any[]): Prisma.PrismaPromise<T>;
 

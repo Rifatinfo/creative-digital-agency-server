@@ -9,17 +9,7 @@ import { router } from "./app/routes";
 
 const app = express();
 
-// Middleware
-// app.use(express.json()); 
-// app.use(cors()); 
-// app.use(compression()); 
-// app.use(cookieParser());
 
-// app.post(
-//     "/api/v1/webhook",
-//     express.raw({ type: "application/json" }),
-//     StripeWebhookController.handleStripeWebhookEvent
-// );
 app.use(
   cors({
     origin: ["http://localhost:3000"],
