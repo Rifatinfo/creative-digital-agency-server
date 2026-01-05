@@ -13,10 +13,7 @@ router.post("/create-customer", fileUploader.upload.single("file"),
     return UserController.createCustomer(req, res , next)
 });
 
-router.get(
-    "/", 
-    UserController.getAllFromDB
-);
+router.get( "/",  UserController.getAllFromDB);
 
 
 router.patch("/", auth(UserRole.CLIENT, UserRole.ADMIN), fileUploader.upload.single('file'), (req : Request, res : Response, next : NextFunction) => {
