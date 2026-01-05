@@ -1,28 +1,21 @@
-import app from './app';
-// import { envVars } from './app/config/env';
-import { prisma } from './app/config/db';
-
+// server.ts
+import app from "./app";
+import { prisma } from "./app/config/db";
 
 let isConnected = false;
 
 async function connectToDB() {
   if (isConnected) return;
-
-  try {
-    await prisma.$connect();
-    isConnected = true;
-    console.log("✅ DB connected");
-  } catch (error) {
-    console.error("❌ DB connection failed", error);
-    throw error; // NEVER process.exit() on Vercel
-  }
+  await prisma.$connect();
+  isConnected = true;
+  console.log("✅ DB connected");
 }
 
-// Vercel calls this automatically
 export default async function handler(req: any, res: any) {
   await connectToDB();
-  return app(req, res);
+  return app(req, res); // Vercel serverless expects a function
 }
+
 
 
 // process.on("SIGTERM", () => {
