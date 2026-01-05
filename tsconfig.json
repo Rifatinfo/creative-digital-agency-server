@@ -1,19 +1,16 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",            // Standard for Node.js backends
-    "moduleResolution": "node",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "rootDir": "./src",
     "outDir": "./dist",
-    "strict": true,                  // Keeps your code high quality
-    "esModuleInterop": true,         // Allows: import express from 'express'
+    "typeRoots": ["./src/types", "./node_modules/@types"],
+    "strict": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true,            // Essential to avoid type conflicts in node_modules
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]               // If you use path aliases
-    }
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.spec.ts"]
+  "exclude": ["node_modules"]
 }
