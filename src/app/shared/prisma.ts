@@ -18,7 +18,7 @@ import { PrismaClient} from "@prisma/client";
 // });
 // const adapter = new PrismaPg(pool);
 // const connectionString = `${process.env.DATABASE_URL}`
-const connectionString = "postgresql://neondb_owner:npg_ImRfd6OGSp3j@ep-floral-shape-a4t46c3x.us-east-1.aws.neon.tech/neondb?sslmode=require"
+const connectionString = "postgresql://neondb_owner:npg_OxankAX36JQm@ep-green-dust-a1sexm1m-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
 
 console.log(connectionString);
 
