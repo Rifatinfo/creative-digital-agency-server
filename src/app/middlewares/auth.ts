@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { StatusCodes } from "http-status-codes";
 import { jwtHelper } from "./jwthelper";
 import AppError from "./AppError";
-import { envVars } from "../config/env";
+import { envVars } from "../../config/env";
 
 const auth = (...roles : string[]) => {
     return async (req : Request & {user?: any}, res : Response, next : NextFunction) => {

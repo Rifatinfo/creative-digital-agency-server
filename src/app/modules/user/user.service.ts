@@ -1,13 +1,15 @@
 import { Request } from "express"
 import { fileUploader } from "../../helper/fileUploader";
 import bcrypt from "bcryptjs";
-import { prisma } from "../../config/db";
+// import { prisma } from "../../../config/db";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
-import { Customer, Prisma, UserRole, UserStatus } from "../../../generated/prisma/client";
+// import { Customer, Prisma, UserRole, UserStatus } from "../../../generated/prisma/client";
 import { userSearchField } from "./user.constant";
 import { IAuthUser } from "../../../types/common";
 import AppError from "../../middlewares/AppError";
 import { StatusCodes } from "http-status-codes";
+import prisma from "../../shared/prisma";
+import { Prisma, UserRole, UserStatus } from "@prisma/client";
 
 const createCustomer = async (req: Request) => {
     let profilePhotoUrl: string | undefined;

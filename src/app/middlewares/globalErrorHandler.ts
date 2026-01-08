@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { envVars } from "../config/env";
+import { envVars } from "../../config/env";
 import { StatusCodes } from "http-status-codes";
-import { Prisma } from "../../generated/prisma/client";
+import { Prisma } from "@prisma/client";
+// import { Prisma } from "../../generated/prisma/client";
 
 export const globalErrorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
     let statusCode: number = err.statusCode || StatusCodes.INTERNAL_SERVER_ERROR;

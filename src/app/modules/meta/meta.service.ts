@@ -1,8 +1,10 @@
 import { StatusCodes } from "http-status-codes";
-import { PaymentStatus, UserRole } from "../../../generated/prisma/enums";
+// import { PaymentStatus, UserRole } from "../../../generated/prisma/enums";
 import { JwtUser } from "../../../types/express"
 import AppError from "../../middlewares/AppError";
-import { prisma } from "../../config/db";
+import { PaymentStatus, UserRole } from "@prisma/client";
+import prisma from "../../shared/prisma";
+// import { prisma } from "../../../config/db";
 
 const fetchDashboardMetaData = async (user: JwtUser) => {
     let metadata;
