@@ -1,13 +1,15 @@
 import { Request } from "express";
-import { prisma } from "../../config/db";
+// import { prisma } from "../../../config/db";
 import bcrypt from "bcryptjs";
 import { fileUploader } from "../../helper/fileUploader";
-import { Admin, Prisma, UserRole, UserStatus } from "../../../generated/prisma/client";
+// import { Admin, Prisma, UserRole, UserStatus } from "../../../generated/prisma/client";
 import { userSearchField } from "../user/user.constant";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
 import { IAuthUser } from "../../../types/common";
 import AppError from "../../middlewares/AppError";
 import { StatusCodes } from "http-status-codes";
+import prisma from "../../shared/prisma";
+import { Admin, Prisma, UserRole, UserStatus } from "@prisma/client";
 
 const createAdmin = async (req: Request) => {
   let profilePhotoUrl: string | undefined;

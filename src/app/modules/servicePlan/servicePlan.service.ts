@@ -1,4 +1,5 @@
-import { prisma } from "../../config/db"
+// import { prisma } from "../../../config/db"
+import prisma from "../../shared/prisma";
 import { IServicePlan } from "./servicePlan.interface"
 
 const createPlanIntoDB = async (serviceId: string,

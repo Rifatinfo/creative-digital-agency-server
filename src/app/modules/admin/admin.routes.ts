@@ -2,8 +2,8 @@ import { NextFunction, Request, Response, Router } from "express";
 import { fileUploader } from "../../helper/fileUploader";
 import { UserValidation } from "./admin.validation";
 import { UserController } from "./admin.controller";
-import auth from "../../middlewares/auth";
-import { UserRole } from "../../../generated/prisma/enums";
+// import auth from "../../middlewares/auth";
+// import { UserRole } from "../../../generated/prisma/enums";
 
 
 const router = Router();

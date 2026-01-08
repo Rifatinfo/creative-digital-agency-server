@@ -1,11 +1,13 @@
 import Stripe from "stripe";
 import AppError from "../../middlewares/AppError";
 import { StatusCodes } from "http-status-codes";
-import { prisma } from "../../config/db";
-import { BookingStatus, PaymentStatus } from "../../../generated/prisma/enums";
+// import { prisma } from "../../../config/db";
+// import { BookingStatus, PaymentStatus } from "../../../generated/prisma/enums";
 import { IInvoiceData } from "./payment.interface";
 import { generatePdf } from "../../utils/invoice";
 import { sendEmail } from "../../utils/sendEmail";
+import prisma from "../../shared/prisma";
+import { BookingStatus, PaymentStatus } from "@prisma/client";
 
 
 const handleStripeWebhookEvent = async (event: Stripe.Event) => {

@@ -3,7 +3,8 @@ import { fileUploader } from "../../helper/fileUploader";
 import { UserValidation } from "./user.validation";
 import { UserController } from "./user.controller";
 import auth from "../../middlewares/auth";
-import { UserRole } from "../../../generated/prisma/enums";
+import { UserRole } from "@prisma/client";
+// import { UserRole } from "../../../generated/prisma/enums";
 
 const router = Router();
 

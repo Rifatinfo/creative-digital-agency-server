@@ -1,12 +1,14 @@
 import { Request } from "express";
 import { fileUploader } from "../../helper/fileUploader";
-import { prisma } from "../../config/db";
+// import { prisma } from "../../../config/db";
 import AppError from "../../middlewares/AppError";
 import { StatusCodes } from "http-status-codes";
 import { IOptions, paginationHelper } from "../../helper/paginationHelper";
-import { Prisma } from "../../../generated/prisma/client";
+// import { Prisma } from "../../../generated/prisma/client";
 import { userSearchField } from "./campaign.constant";
 import { Project } from "./campaign.interface";
+import prisma from "../../shared/prisma";
+import { Prisma } from "@prisma/client";
 
 const createCampaign = async (req: Request) => {
     if (!req.user) {

@@ -1,12 +1,14 @@
 import { StatusCodes } from "http-status-codes";
-import { UserStatus } from "../../../generated/prisma/enums"
-import { prisma } from "../../config/db"
+// import { UserStatus } from "../../../generated/prisma/enums"
+// import { prisma } from "../../../config/db"
 import AppError from "../../middlewares/AppError";
 import bcrypt from "bcryptjs";
 import { jwtHelper } from "../../middlewares/jwthelper";
-import { envVars } from "../../config/env";
+import { envVars } from "../../../config/env";
 import { Secret } from "jsonwebtoken";
 import { sendEmail } from "../../utils/sendEmail";
+import prisma from "../../shared/prisma";
+import { UserStatus } from "@prisma/client";
 
 const login = async (payload: { email: string, password: string }) => {
     const user = await prisma.user.findUniqueOrThrow({

@@ -1,11 +1,12 @@
 import { StatusCodes } from "http-status-codes"
-import { prisma } from "../../config/db"
+// import { prisma } from "../../../config/db"
 import AppError from "../../middlewares/AppError"
 import { ICreateBookingPayload } from "./booking.interface"
 import { v4 as uuidv4 } from 'uuid';
 
 
 import { stripe } from "../../helper/strip";
+import prisma from "../../shared/prisma";
 
 const createBookingIntro = async (payload: ICreateBookingPayload) => {
   // Fetch the plan by UUID

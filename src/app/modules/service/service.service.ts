@@ -1,4 +1,5 @@
-import { prisma } from "../../config/db"
+// import { prisma } from "../../../config/db"
+import prisma from "../../shared/prisma";
 import { IService } from "./service.interface"
 
 const createServiceInto = async (payload: IService) => {
