@@ -1,8 +1,6 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import express, { Application, NextFunction, Request, Response } from 'express';
-// import httpStatus from 'http-status';
-// import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import { router } from './app/routes';
 import { StatusCodes } from 'http-status-codes';
 
@@ -11,14 +9,16 @@ const app: Application = express();
 app.use(cookieParser());
 
 
-
+//parser
+app.use(express.json());
 app.use(cors({
-    origin: ['https://creative-digital-agency-client.vercel.app'],
+    origin: 'https://creative-digital-agency-client.vercel.app',
+    // origin: 'http://localhost:3000',
     credentials: true
 }));
 
-//parser
-app.use(express.json());
+// Handle preflight requests for all routes
+// app.options('*', cors());
 app.use(express.urlencoded({ extended: true }));
 
 
