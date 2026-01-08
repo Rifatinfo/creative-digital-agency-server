@@ -12,3 +12,4 @@ dist/
 uploads/*
 !uploads/.gitkeep
 *.log
+.env*.local

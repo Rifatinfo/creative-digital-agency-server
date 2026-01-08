@@ -75,8 +75,8 @@ const createBookingIntro = async (payload: ICreateBookingPayload) => {
         bookingId: booking.id,
       },
 
-      success_url: `http://localhost:3000/payment-success?bookingId=${booking.id}&paymentId=${payment.id}`,
-      cancel_url: `http://localhost:3000`,
+      success_url: `https://creative-digital-agency-client.vercel.app/payment-success?bookingId=${booking.id}&paymentId=${payment.id}`,
+      cancel_url: `https://creative-digital-agency-client.vercel.app/payment-cancel`,
     });
 
     return {
