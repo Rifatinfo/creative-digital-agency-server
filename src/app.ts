@@ -12,8 +12,8 @@ app.use(cookieParser());
 //parser
 app.use(express.json());
 app.use(cors({
-    origin: 'https://creative-digital-agency-client.vercel.app',
-    // origin: 'http://localhost:3000',
+    // origin: 'https://creative-digital-agency-client.vercel.app',
+    origin: 'http://localhost:3000',
     credentials: true
 }));
 
