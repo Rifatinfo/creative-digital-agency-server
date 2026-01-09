@@ -25,8 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req: Request, res: Response) => {
     res.send({
-        Message: "Colourrose Backend is running successfully!"
-    })
+        Message: "Social Verb Backend is running successfully!"
+    });
 });
 
 app.use('/api/v1', router);
