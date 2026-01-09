@@ -11,16 +11,15 @@ import prisma from "../../shared/prisma";
 import { Prisma } from "@prisma/client";
 
 const createCampaign = async (req: Request) => {
-    if (!req.user) {
-        throw new AppError(StatusCodes.UNAUTHORIZED, "Unauthorized");
-    }
+    
     let profilePhotoUrl: string | undefined;
 
     if (req.file) {
         const uploadResult = await fileUploader.uploadToCloudinary(req.file);
         profilePhotoUrl = uploadResult?.secure_url;
     }
-
+    console.log(profilePhotoUrl);
+    
     const newCampaign = await prisma.campaign.create({
 
         data: {
@@ -34,7 +33,7 @@ const createCampaign = async (req: Request) => {
             duration: req.body.duration,
             brand: req.body.brand,
             featured: Boolean(req.body.featured),
-            adminEmail: req.user.email,
+            adminEmail: "admin@example.com",
         },
     });
 

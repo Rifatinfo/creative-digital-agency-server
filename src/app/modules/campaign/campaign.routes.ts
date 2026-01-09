@@ -8,7 +8,7 @@ import { UserRole } from "@prisma/client";
 
 const router = Router();
 
-router.post("/create-campaign", auth(UserRole.ADMIN), fileUploader.upload.single('file'),
+router.post("/create-campaign", fileUploader.upload.single('file'),
     (req: Request, res: Response, next: NextFunction) => {
         req.body = CampaignValidation.campaignSchema.parse(JSON.parse(req.body.data))
         return CampaignController.createCampaign(req, res, next)
